@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pedidos Persistentes</title>
+  <title>Pedidos Remixables</title>
   <style>
     @font-face {
       font-family: 'RifficFreeBold';
@@ -21,6 +21,12 @@
     .container {
       max-width: 400px;
       margin: auto;
+      text-align: center;
+    }
+
+    #logo {
+      width: 150px;
+      margin-bottom: 1em;
     }
 
     #addBtn {
@@ -32,7 +38,6 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-family: 'RifficFreeBold';
     }
 
     .pedido {
@@ -49,12 +54,10 @@
       flex: 1;
       padding: 5px;
       font-size: 1em;
-      font-family: 'RifficFreeBold';
     }
 
     .pedido button {
       margin-left: 5px;
-      font-family: 'RifficFreeBold';
     }
 
     .overlay {
@@ -72,8 +75,8 @@
       color: white;
       text-align: center;
       font-size: 2em;
-      animation: zoomIn 1s cubic-bezier(0.22, 1, 0.36, 1) forwards, shake 1s infinite;
       font-family: 'RifficFreeBold';
+      animation: zoomIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards, shake 1s infinite;
       transform: scale(0);
     }
 
@@ -92,12 +95,21 @@
 </head>
 <body>
   <div class="container">
+    <img src="logo.png" id="logo" alt="Logo" />
     <button id="addBtn">+</button>
     <div id="pedidos"></div>
   </div>
 
+  <audio id="clickSound" src="https://cdn.jsdelivr.net/gh/raphapro900/sounds/click.mp3"></audio>
+
   <script>
     let pedidosData = [];
+
+    function playClick() {
+      const sound = document.getElementById('clickSound');
+      sound.currentTime = 0;
+      sound.play();
+    }
 
     function savePedidos() {
       localStorage.setItem('pedidos', JSON.stringify(pedidosData));
@@ -132,6 +144,7 @@
     }
 
     function createPedido() {
+      playClick();
       const pedidoDiv = document.createElement('div');
       pedidoDiv.className = 'pedido';
 
@@ -145,6 +158,7 @@
       const doneBtn = document.createElement('button');
       doneBtn.textContent = '✔';
       doneBtn.onclick = () => {
+        playClick();
         const desc = input.value.trim();
         if (!desc) return;
 
@@ -174,11 +188,15 @@
 
       const pedidoBtn = document.createElement('button');
       pedidoBtn.textContent = `${label.textContent} ${desc}`;
-      pedidoBtn.onclick = () => showOverlay(label.textContent, desc);
+      pedidoBtn.onclick = () => {
+        playClick();
+        showOverlay(label.textContent, desc);
+      };
 
       const editBtn = document.createElement('button');
       editBtn.textContent = '✎';
       editBtn.onclick = () => {
+        playClick();
         pedidoBtn.remove();
         editBtn.remove();
         deleteBtn.remove();
@@ -190,6 +208,7 @@
         const doneBtn = document.createElement('button');
         doneBtn.textContent = '✔';
         doneBtn.onclick = () => {
+          playClick();
           const newDesc = input.value.trim();
           if (!newDesc) return;
           pedidosData[num - 1] = newDesc;
@@ -206,6 +225,7 @@
       const deleteBtn = document.createElement('button');
       deleteBtn.textContent = '🗑';
       deleteBtn.onclick = () => {
+        playClick();
         pedidoDiv.remove();
         pedidosData.splice(num - 1, 1);
         updatePedidoNumbers();
